@@ -1,70 +1,43 @@
-# Vorhersage des Einkommens auf Basis von Bildungsmerkmalen (NEPScomp)
+# Vorhersage des Einkommens auf Basis von Bildungsmerkmalen (Predicting Income from Educational Characteristics) – NEPScomp
 
-Datenprojekt im Studiengang Social Data Science & Communication, TH Nürnberg Georg Simon Ohm
+Data project in the Social Data Science & Communication program, TH Nürnberg Georg Simon Ohm
 
 | | |
 |---|---|
-| **Student** | Temirlan Anarkulov |
-| **Betreuung** | Prof. Julia Plaß (TH Nürnberg), inhaltlich Michael Bergrab (LIfBi) |
-| **Zeitraum** | Oktober 2026 bis Januar 2027 |
+| Student | Temirlan Anarkulov |
+| Supervision | Prof. Julia Plaß (TH Nürnberg), content advisor Michael Bergrab (LIfBi) |
+| Period | October 2026 to January 2027 |
 
+## Research Question
 
-## Fragestellung
+Can a person's later income be predicted from their educational characteristics?
 
-Lässt sich das spätere Einkommen einer Person aus ihren Bildungsmerkmalen vorhersagen?
+- Describe the data (summary statistics and visualizations)
+- Build predictive models for income and compare different methods
+- Evaluate the approaches and select a model
 
-1. Die Daten **deskriptiv analysieren** (Maßzahlen und Visualisierungen)
-2. **Prädiktive Modelle** für das Einkommen entwickeln und verschiedene Methoden ausprobieren
-3. Die Ansätze **evaluieren** und ein Modell auswählen
+## Data
 
-## Datengrundlage
+German National Educational Panel Study (NEPS), NEPScomp, Starting Cohort 6 (Adults), version 17.0.0, published by the Leibniz Institute for Educational Trajectories (LIfBi), Bamberg: https://www.neps-data.de
 
-- **Nationales Bildungspanel (NEPS)**, Aufbereitung **NEPScomp**, Startkohorte 6 (Erwachsene), Version 17.0.0
-- Herausgeber: Leibniz-Institut für Bildungsverläufe (LIfBi), Bamberg, https://www.neps-data.de
-
-| Datei | Verwendete Informationen |
+| File | Variables used |
 |---|---|
-| `SC6_Basics` | Geschlecht, Geburtsjahr, Bildung der Eltern |
-| `SC6_Education` | Höchster Abschluss (ISCED-2011) |
-| `SC6_spEmp` | Nettoeinkommen, Wochenarbeitszeit, Mini-Job |
-| `SC6_spSchool` | Abschlussnote |
+| SC6_Basics | Gender, year of birth, parents' education |
+| SC6_Education | Highest degree (ISCED-2011) |
+| SC6_spEmp | Net income, weekly working hours, mini-job |
+| SC6_spSchool | Final grade |
 
-**Datenschutz:** Die NEPS-Daten unterliegen einem Datennutzungsvertrag und sind **nicht** in diesem Repository enthalten. `data/` und `output/` (Personendaten) sind per `.gitignore` ausgeschlossen. In `figures/` und `tables/` liegen ausschließlich aggregierte Ergebnisse.
+**Data protection:** The NEPS data is subject to a data use agreement and is not included in this repository. `data/` and `output/` (personal data) are excluded via `.gitignore`. `figures/` and `tables/` contain aggregated results only.
 
-## Projektstruktur
+## How to Run
 
-**Im Repository:**
-
-```
-education-income-prediction/
-├── figures/                    
-├── tables/                     
-├── .gitignore
-├── 01_data_preparation.py      
-├── 02_descriptive_analysis.py  
-├── 03_models.py                
-├── 04_evaluation.py          
-└── README.md
-```
-
-**Nur lokal (per `.gitignore` ausgeschlossen, Datenschutz):**
-
-```
-├── data/                       # NEPS-Rohdaten (.dta), Zugang nur über Datennutzungsvertrag
-└── output/                     # Zwischenergebnisse mit Personendaten (.pkl, .csv, .joblib)
-```
-
-Wer den Code ausführen will, legt die NEPS-Dateien in `data/` ab. `output/` wird von den Skripten automatisch erstellt.
-
-## Ausführung
-
-Voraussetzungen: Python 3.12, Pakete:
+Requirements: Python 3.12
 
 ```bash
 pip install pandas numpy pyreadstat matplotlib seaborn scipy scikit-learn joblib
 ```
 
-NEPS-Dateien (`.dta`) in den Ordner `data/` legen, dann die Skripte der Reihe nach ausführen:
+Put the NEPS files (.dta) into a `data/` folder, then run the scripts in order:
 
 ```bash
 python 01_data_preparation.py
@@ -73,26 +46,28 @@ python 03_models.py
 python 04_evaluation.py
 ```
 
-## Vorgehen
+The `output/` folder is created automatically.
 
-| Schritt | Inhalt |
+## Approach
+
+| Step | Content |
 |---|---|
-| Aufbereitung | NEPS-Missing-Codes (negative Werte) als fehlend behandelt; pro Person das letzte gültige Nettoeinkommen (ohne Mini-Jobs); höchster Abschluss in 7 Gruppen; Akademikerfamilie = mind. ein Elternteil mit FH-/Uni-Abschluss |
-| Stichprobe | Nettoeinkommen 300–15.000 €, nur Vollzeit (≥ 35 Std./Woche): **n = 8.667** |
-| Deskriptiv | Median/Quartile, Histogramm, Boxplots + Eta², Spearman-Korrelation, Gruppenmittelwerte |
-| Modelle | Baseline (Median), Lineare Regression, Lasso, Random Forest, Gradient Boosting; Zielvariable log(Einkommen), Gütemaße in Euro |
-| Evaluation | 80/20 Train/Test-Split, 5-fache Kreuzvalidierung, RMSE, MAE, R², Permutation Importance |
+| Preparation | NEPS missing codes (negative values) treated as missing; last valid net income per person (excluding mini-jobs); highest degree in 7 groups; academic family = at least one parent with a university / university of applied sciences degree |
+| Sample | Net income €300–15,000, full-time only (≥ 35 hrs/week): n = 8,667 |
+| Descriptive | Median/quartiles, histogram, boxplots + eta², Spearman correlation, group means |
+| Models | Baseline (median), linear regression, Lasso, random forest, gradient boosting; target variable log(income), metrics in euros |
+| Evaluation | 80/20 train/test split, 5-fold cross-validation, RMSE, MAE, R², permutation importance |
 
-## Zentrale Ergebnisse
+## Key Results
 
-- Der höchste Abschluss erklärt allein ca. **18 %** der Einkommensunterschiede (η² = 0,18).
-- Alle Modelle erreichen ein Test-R² von ca. **0,30** (RMSE ca. 1.320 €) und schlagen die Baseline deutlich.
-- Komplexe Modelle (Random Forest, Gradient Boosting) sind kaum besser als die lineare Regression.
-- Wichtigster Prädiktor ist der **Abschluss**; Abschlussnote und Bildung der Eltern tragen bei gegebenem Abschluss kaum zusätzlich bei.
+- The highest degree alone explains about 18% of income differences (η² = 0.18).
+- All models reach a test R² of about 0.30 (RMSE about €1,320) and clearly beat the baseline.
+- Complex models (random forest, gradient boosting) are barely better than linear regression.
+- The most important predictor is the degree; final grade and parents' education add little once the degree is known.
 
-## Einsatz von KI
+## Use of AI
 
-Gemäß den Vorgaben ist gekennzeichnet, welche Teile mit KI erstellt wurden. KI-generierte Blöcke im Code sind so markiert:
+As required, AI-generated parts are labeled. AI-generated code blocks are marked like this:
 
 ```python
 # >>> KI-generiert (Claude), von mir ausgeführt und nachvollzogen
@@ -100,16 +75,11 @@ Gemäß den Vorgaben ist gekennzeichnet, welche Teile mit KI erstellt wurden. KI
 # <<< Ende KI
 ```
 
-| Datei | Zeilen | Art | Werkzeug |
+| File | Lines | Type | Tool |
 |---|---|---|---|
-| `README.md` | gesamte Datei | KI-generiert, von mir geprüft und angepasst | Claude (Anthropic) |
-| `.gitignore` | gesamte Datei | selbst erstellt | – |
-| `01_data_preparation.py` | gesamte Datei | KI-generiert, von mir ausgeführt und nachvollzogen | Claude (Anthropic) |
-| `02_descriptive_analysis.py` | gesamte Datei | KI-generiert, von mir ausgeführt und nachvollzogen | Claude (Anthropic) |
-| `03_models.py` | gesamte Datei | KI-generiert, von mir ausgeführt und nachvollzogen | Claude (Anthropic) |
-| `04_evaluation.py` | gesamte Datei | KI-generiert, von mir ausgeführt und nachvollzogen | Claude (Anthropic) |
-
-## Quellen
-
-- Blossfeld, H.-P. & Roßbach, H.-G. (Hrsg.) (2019). *Education as a Lifelong Process: The German National Educational Panel Study (NEPS)*. 2. Aufl., Springer VS.
-- NEPS-Netzwerk: Nationales Bildungspanel, Startkohorte 6 – Erwachsene. LIfBi, Bamberg. https://www.neps-data.de
+| README.md | entire file | AI-generated, reviewed and adapted by me | Claude (Anthropic) |
+| .gitignore | entire file | written by me | – |
+| 01_data_preparation.py | entire file | AI-generated, run and understood by me | Claude (Anthropic) |
+| 02_descriptive_analysis.py | entire file | AI-generated, run and understood by me | Claude (Anthropic) |
+| 03_models.py | entire file | AI-generated, run and understood by me | Claude (Anthropic) |
+| 04_evaluation.py | entire file | AI-generated, run and understood by me | Claude (Anthropic) |
